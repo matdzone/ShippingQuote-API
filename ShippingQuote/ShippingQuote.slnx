@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="shippingquote.client/shippingquote.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="ShippingQuote.Server/ShippingQuote.Server.csproj" />
+</Solution>
