@@ -1,8 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using ShippingQuote.Server.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<ShippingQuoteDbContext>(options =>
+	options.UseSqlServer(
+		builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -24,5 +31,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
+using (var scope = app.Services.CreateScope())
+{
+	var dbContext =
+		scope.ServiceProvider.GetRequiredService<ShippingQuoteDbContext>();
 
+	await DbSeeder.SeedAsync(dbContext);
+}
 app.Run();
