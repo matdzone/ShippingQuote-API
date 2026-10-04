@@ -5,9 +5,7 @@ namespace ShippingQuote.Server.Data;
 
 public class ShippingQuoteDbContext : DbContext
 {
-	public ShippingQuoteDbContext(
-		DbContextOptions<ShippingQuoteDbContext> options)
-		: base(options)
+	public ShippingQuoteDbContext(DbContextOptions<ShippingQuoteDbContext> options): base(options)
 	{
 	}
 

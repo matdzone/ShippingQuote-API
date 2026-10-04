@@ -14,13 +14,9 @@ public class PricingRule
 
 	public decimal? FreeFromOrderValue { get; set; }
 
-	public string? DestinationCountryCode { get; set; }
-
 	public DateTimeOffset ValidFrom { get; set; }
 
 	public DateTimeOffset? ValidTo { get; set; }
-
-	public int Priority { get; set; }
 
 	public bool IsActive { get; set; } = true;
 

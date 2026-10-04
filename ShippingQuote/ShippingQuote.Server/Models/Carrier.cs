@@ -10,8 +10,6 @@ public class Carrier
 
 	public string? Description { get; set; }
 
-	public string? Website { get; set; }
-
 	public bool IsActive { get; set; } = true;
 
 	public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;

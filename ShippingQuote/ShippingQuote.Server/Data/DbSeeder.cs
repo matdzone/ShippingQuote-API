@@ -18,7 +18,6 @@ public static class DbSeeder
 			Name = "Baltic Parcel",
 			Code = "BP",
 			Description = "Demo parcel delivery provider",
-			Website = "https://example.com",
 			IsActive = true
 		};
 
@@ -27,7 +26,6 @@ public static class DbSeeder
 			Name = "Fast Ship",
 			Code = "FS",
 			Description = "Demo courier provider",
-			Website = "https://example.com",
 			IsActive = true
 		};
 
@@ -149,9 +147,7 @@ public static class DbSeeder
 				MinWeightKg = 0,
 				MaxWeightKg = 2,
 				Price = 2.99m,
-				DestinationCountryCode = "LT",
 				ValidFrom = DateTimeOffset.UtcNow,
-				Priority = 1,
 				IsActive = true
 			},
 			new PricingRule
@@ -160,9 +156,7 @@ public static class DbSeeder
 				MinWeightKg = 2,
 				MaxWeightKg = 5,
 				Price = 3.49m,
-				DestinationCountryCode = "LT",
 				ValidFrom = DateTimeOffset.UtcNow,
-				Priority = 1,
 				IsActive = true
 			},
 			new PricingRule
@@ -171,9 +165,7 @@ public static class DbSeeder
 				MinWeightKg = 0,
 				MaxWeightKg = 5,
 				Price = 5.99m,
-				DestinationCountryCode = "LT",
 				ValidFrom = DateTimeOffset.UtcNow,
-				Priority = 1,
 				IsActive = true
 			},
 			new PricingRule
@@ -182,9 +174,7 @@ public static class DbSeeder
 				MinWeightKg = 0,
 				MaxWeightKg = 5,
 				Price = 3.20m,
-				DestinationCountryCode = "LT",
 				ValidFrom = DateTimeOffset.UtcNow,
-				Priority = 1,
 				IsActive = true
 			},
 			new PricingRule
@@ -193,9 +183,7 @@ public static class DbSeeder
 				MinWeightKg = 0,
 				MaxWeightKg = 5,
 				Price = 3.79m,
-				DestinationCountryCode = "LT",
 				ValidFrom = DateTimeOffset.UtcNow,
-				Priority = 1,
 				IsActive = true
 			}
 		);

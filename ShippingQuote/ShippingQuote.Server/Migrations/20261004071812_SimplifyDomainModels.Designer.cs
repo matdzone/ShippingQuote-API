@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShippingQuote.Server.Data;
 
@@ -11,9 +12,11 @@ using ShippingQuote.Server.Data;
 namespace ShippingQuote.Server.Migrations
 {
     [DbContext(typeof(ShippingQuoteDbContext))]
-    partial class ShippingQuoteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261004071812_SimplifyDomainModels")]
+    partial class SimplifyDomainModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
