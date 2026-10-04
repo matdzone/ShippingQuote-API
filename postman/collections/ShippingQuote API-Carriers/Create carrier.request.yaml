@@ -1,0 +1,32 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/api/carriers"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Test Carrier\",\r
+
+    \  \"code\": \"TEST\",\r
+
+    \  \"description\": \"Temporary API test carrier\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const body = pm.response.json();\r
+
+      \r
+
+      pm.collectionVariables.set(\"testCarrierId\", body.id);\r
+
+      \r
+
+      pm.test(\"Status is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });"
+    language: text/javascript
+order: 1791113579076

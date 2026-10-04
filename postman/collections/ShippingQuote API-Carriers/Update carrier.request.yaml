@@ -1,0 +1,28 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/api/carriers/{{testCarrierId}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Updated Test Carrier\",\r
+
+    \  \"code\": \"TEST\",\r
+
+    \  \"description\": \"Updated using Postman\",\r
+
+    \  \"isActive\": false\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "// Update carrier\r
+
+      pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 4370839473007301

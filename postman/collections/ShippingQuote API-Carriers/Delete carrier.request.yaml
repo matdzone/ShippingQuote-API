@@ -1,0 +1,15 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/api/carriers/{{testCarrierId}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: "// Delete carrier\r
+
+      pm.test(\"Status is 204\", function () {\r
+
+      \    pm.response.to.have.status(204);\r
+
+      });"
+    language: text/javascript
+order: 4382856482271455

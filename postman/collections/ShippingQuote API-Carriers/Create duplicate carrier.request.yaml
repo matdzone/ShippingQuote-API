@@ -1,0 +1,26 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/api/carriers"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Another Test Carrier\",\r
+
+    \  \"code\": \"TEST\",\r
+
+    \  \"description\": \"Duplicate code test\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "// Create duplicate carrier\r
+
+      pm.test(\"Status is 409\", function () {\r
+
+      \    pm.response.to.have.status(409);\r
+
+      });"
+    language: text/javascript
+order: 4326635977850484

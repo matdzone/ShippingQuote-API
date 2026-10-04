@@ -1,0 +1,5 @@
+$kind: collection
+name: ShippingQuote API/Carriers
+variables:
+  baseUrl: ""
+  testCarrierId: ""

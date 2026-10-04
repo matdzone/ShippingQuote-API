@@ -1,0 +1,15 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/api/carriers/{{testCarrierId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "// Get carrier by id\r
+
+      pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 2425667316695720
