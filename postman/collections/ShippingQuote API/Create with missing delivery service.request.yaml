@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{baseUrl}}/api/pricing-rules"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"deliveryServiceId\": 99999,\r
+
+    \  \"minWeightKg\": 20,\r
+
+    \  \"maxWeightKg\": 25,\r
+
+    \  \"price\": 7.99,\r
+
+    \  \"freeFromOrderValue\": null,\r
+
+    \  \"validFrom\": \"2026-10-04T00:00:00+03:00\",\r
+
+    \  \"validTo\": null\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 400\", function () {\r
+
+      \    pm.response.to.have.status(400);\r
+
+      });"
+    language: text/javascript
+order: 4503599528926255

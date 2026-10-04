@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{baseUrl}}/api/delivery-services/{{testDeliveryServiceId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Delivery service contains hypermedia links\", function () {\r
+
+      \    const body = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(body._links).to.be.an(\"array\");\r
+
+      \r
+
+      \    const relations = body._links.map(link => link.rel);\r
+
+      \r
+
+      \    pm.expect(relations).to.include(\"self\");\r
+
+      \    pm.expect(relations).to.include(\"carrier\");\r
+
+      \    pm.expect(relations).to.include(\"pricing-rules\");\r
+
+      });"
+    language: text/javascript
+order: 4496150954372549

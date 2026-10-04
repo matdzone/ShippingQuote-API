@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/pricing-rules"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 4503598674249137

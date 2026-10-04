@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/api/carriers?page=0&pageSize=10"
+method: GET
+queryParams:
+  page: "0"
+  pageSize: "10"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 400\", function () {\r
+
+      \    pm.response.to.have.status(400);\r
+
+      });"
+    language: text/javascript
+order: 4503599627370192

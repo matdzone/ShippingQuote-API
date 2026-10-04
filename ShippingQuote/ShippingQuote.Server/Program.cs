@@ -1,14 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using ShippingQuote.Server.Data;
 using ShippingQuote.Server.Services;
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	.AddJsonOptions(options =>
+	{
+		options.JsonSerializerOptions.Converters
+			.Add(new JsonStringEnumConverter());
+	});
 
 builder.Services.AddScoped<CarrierService>();
-
+builder.Services.AddScoped<DeliveryServiceService>();
+builder.Services.AddScoped<PricingRuleService>();
+builder.Services.AddScoped<DashboardService>();
 builder.Services.AddDbContext<ShippingQuoteDbContext>(options =>
 	options.UseSqlServer(
 		builder.Configuration.GetConnectionString("DefaultConnection")));

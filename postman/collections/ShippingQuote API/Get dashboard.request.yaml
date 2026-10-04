@@ -1,0 +1,34 @@
+$kind: http-request
+url: "{{baseUrl}}/api/dashboard"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Dashboard contains aggregate data\", function () {\r
+
+      \    const body = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(body).to.have.property(\"totalCarriers\");\r
+
+      \    pm.expect(body).to.have.property(\"activeCarriers\");\r
+
+      \    pm.expect(body).to.have.property(\"totalDeliveryServices\");\r
+
+      \    pm.expect(body).to.have.property(\"activeDeliveryServices\");\r
+
+      \    pm.expect(body).to.have.property(\"totalPricingRules\");\r
+
+      \    pm.expect(body).to.have.property(\"activePricingRules\");\r
+
+      });"
+    language: text/javascript
+order: 4503599626671045

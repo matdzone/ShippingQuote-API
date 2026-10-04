@@ -1,0 +1,30 @@
+$kind: http-request
+url: "{{baseUrl}}/api/pricing-rules?deliveryServiceId=1"
+method: GET
+queryParams:
+  deliveryServiceId: "1"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Returned rules belong to delivery service 1\", function () {\r
+
+      \    const body = pm.response.json();\r
+
+      \r
+
+      \    body.items.forEach(rule => {\r
+
+      \        pm.expect(rule.deliveryServiceId).to.eql(1);\r
+
+      \    });\r
+
+      });"
+    language: text/javascript
+order: 4503599627370471

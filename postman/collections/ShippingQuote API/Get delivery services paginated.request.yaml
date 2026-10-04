@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{baseUrl}}/api/delivery-services?page=1&pageSize=2"
+method: GET
+queryParams:
+  page: "1"
+  pageSize: "2"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Returns at most two services\", function () {\r
+
+      \    const body = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(body.page).to.eql(1);\r
+
+      \    pm.expect(body.pageSize).to.eql(2);\r
+
+      \    pm.expect(body.items.length).to.be.at.most(2);\r
+
+      });"
+    language: text/javascript
+order: 4503599627370464

@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/delivery-services"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 4473824562280516

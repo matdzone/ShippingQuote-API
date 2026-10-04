@@ -1,0 +1,33 @@
+$kind: http-request
+url: "{{baseUrl}}/api/pricing-rules/{{testPricingRuleId}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"deliveryServiceId\": 1,\r
+
+    \  \"minWeightKg\": 10,\r
+
+    \  \"maxWeightKg\": 16,\r
+
+    \  \"price\": 7.49,\r
+
+    \  \"freeFromOrderValue\": 100,\r
+
+    \  \"validFrom\": \"2026-10-04T00:00:00+03:00\",\r
+
+    \  \"validTo\": \"2027-02-01T00:00:00+02:00\",\r
+
+    \  \"isActive\": false\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 4503599603792322

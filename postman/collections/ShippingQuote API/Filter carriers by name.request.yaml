@@ -1,0 +1,36 @@
+$kind: http-request
+url: "{{baseUrl}}/api/carriers?name=Baltic"
+method: GET
+queryParams:
+  name: Baltic
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Returned carriers match name filter\", function () {\r
+
+      \    const body = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(body.items).to.be.an(\"array\");\r
+
+      \r
+
+      \    body.items.forEach(carrier => {\r
+
+      \        pm.expect(carrier.name.toLowerCase())\r
+
+      \            .to.include(\"baltic\");\r
+
+      \    });\r
+
+      });"
+    language: text/javascript
+order: 4503599627369022

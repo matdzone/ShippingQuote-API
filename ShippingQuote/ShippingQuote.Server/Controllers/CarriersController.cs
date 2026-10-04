@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using ShippingQuote.Server.DTOs.Carriers;
+using ShippingQuote.Server.DTOs.Common;
 using ShippingQuote.Server.Services;
 
 namespace ShippingQuote.Server.Controllers
@@ -13,10 +15,36 @@ namespace ShippingQuote.Server.Controllers
 		{
 			_service = service;
 		}
-		[HttpGet]
+		/*[HttpGet]
 		public async Task <ActionResult<List<CarrierDto>>> GetAll(){
 			List<CarrierDto> carriers = await _service.GetAllAsync();
 			return Ok(carriers);
+		}*/
+		[HttpGet]
+		public async Task<ActionResult<PagedResult<CarrierDto>>> GetAll(
+	[FromQuery] int page = 1,
+	[FromQuery] int pageSize = 10,
+	[FromQuery] string? name = null,
+	[FromQuery] bool? isActive = null)
+		{
+			if (page < 1 || pageSize < 1 || pageSize > 100)
+			{
+				return BadRequest();
+			}
+
+			PagedResult<CarrierDto> result =
+				await _service.GetAllAsync(
+					page,
+					pageSize,
+					name,
+					isActive);
+
+			foreach (CarrierDto carrier in result.Items)
+			{
+				AddLinks(carrier);
+			}
+
+			return Ok(result);
 		}
 		[HttpGet("{id}")]
 		public async Task <ActionResult<CarrierDto>> GetById(int id){
@@ -25,6 +53,7 @@ namespace ShippingQuote.Server.Controllers
 			{
 				return NotFound();
 			}
+			AddLinks(carrier);
 			return Ok(carrier);
 		}
 		[HttpPost]
@@ -35,6 +64,7 @@ namespace ShippingQuote.Server.Controllers
 				return Conflict("Carrier with this code already exists.");
 			}
 			CarrierDto carrier = await _service.CreateAsync(dto);
+			AddLinks(carrier);
 			return CreatedAtAction(nameof(GetById),new { id = carrier.Id }, 
 			carrier);
 
@@ -49,6 +79,7 @@ namespace ShippingQuote.Server.Controllers
 			if (carrier == null) {
 				return NotFound();
 			}
+			AddLinks(carrier);
 			return Ok(carrier);
 		}
 		[HttpDelete("{id}")]
@@ -59,6 +90,30 @@ namespace ShippingQuote.Server.Controllers
 				return NotFound();
 			}
 			return NoContent();
+		}
+		private void AddLinks(CarrierDto carrier)
+		{
+			carrier.Links =
+			[
+				new()
+		{
+			Rel = "self",
+			Href = $"/api/carriers/{carrier.Id}",
+			Method = "GET"
+		},
+		new()
+		{
+			Rel = "update",
+			Href = $"/api/carriers/{carrier.Id}",
+			Method = "PUT"
+		},
+		new()
+		{
+			Rel = "delete",
+			Href = $"/api/carriers/{carrier.Id}",
+			Method = "DELETE"
+		}
+			];
 		}
 
 	}

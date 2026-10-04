@@ -1,0 +1,35 @@
+$kind: http-request
+url: "{{baseUrl}}/api/delivery-services"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"carrierId\": 1,\r
+
+    \  \"name\": \"Invalid Delivery Window\",\r
+
+    \  \"type\": \"Courier\",\r
+
+    \  \"maxWeightKg\": 20,\r
+
+    \  \"maxLengthCm\": 60,\r
+
+    \  \"maxWidthCm\": 50,\r
+
+    \  \"maxHeightCm\": 40,\r
+
+    \  \"minDeliveryDays\": 5,\r
+
+    \  \"maxDeliveryDays\": 2\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 400\", function () {\r
+
+      \    pm.response.to.have.status(400);\r
+
+      });"
+    language: text/javascript
+order: 4502900878602425

@@ -2,7 +2,7 @@
 using ShippingQuote.Server.Data;
 using ShippingQuote.Server.DTOs.Carriers;
 using ShippingQuote.Server.Models;
-
+using ShippingQuote.Server.DTOs.Common;
 namespace ShippingQuote.Server.Services
 {
 	public class CarrierService
@@ -11,7 +11,7 @@ namespace ShippingQuote.Server.Services
 		public CarrierService(ShippingQuoteDbContext context){
 			_context = context;
 		}
-		public async Task<List<CarrierDto>> GetAllAsync()
+		/*public async Task<List<CarrierDto>> GetAllAsync()
 		{
 			return await _context.Carriers.OrderBy(c  => c.Name)
 			.Select(c => new CarrierDto{
@@ -22,6 +22,49 @@ namespace ShippingQuote.Server.Services
 				IsActive = c.IsActive,
 				CreatedAt = c.CreatedAt
 			}).ToListAsync();
+		}*/
+		public async Task<PagedResult<CarrierDto>> GetAllAsync(
+	int page, int pageSize, string? name, bool? isActive)
+		{
+			IQueryable<Carrier> query =
+				_context.Carriers.AsNoTracking();
+
+			if (!string.IsNullOrWhiteSpace(name))
+			{
+				query = query.Where(c => c.Name.Contains(name));
+			}
+
+			if (isActive.HasValue)
+			{
+				query = query.Where(c => c.IsActive == isActive.Value);
+			}
+
+			int totalCount = await query.CountAsync();
+
+			List<CarrierDto> items = await query
+				.OrderBy(c => c.Name)
+				.Skip((page - 1) * pageSize)
+				.Take(pageSize)
+				.Select(c => new CarrierDto
+				{
+					Id = c.Id,
+					Name = c.Name,
+					Code = c.Code,
+					Description = c.Description,
+					IsActive = c.IsActive,
+					CreatedAt = c.CreatedAt
+				})
+				.ToListAsync();
+
+			return new PagedResult<CarrierDto>
+			{
+				Items = items,
+				Page = page,
+				PageSize = pageSize,
+				TotalCount = totalCount,
+				TotalPages = (int)Math.Ceiling(
+					totalCount / (double)pageSize)
+			};
 		}
 		public async Task<CarrierDto?> GetByIdAsync(int id)
 		{

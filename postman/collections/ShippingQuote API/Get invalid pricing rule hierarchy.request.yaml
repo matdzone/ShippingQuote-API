@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/carriers/5/services/1/pricing-rules"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 404\", function () {\r
+
+      \    pm.response.to.have.status(404);\r
+
+      });"
+    language: text/javascript
+order: 4503599626063450

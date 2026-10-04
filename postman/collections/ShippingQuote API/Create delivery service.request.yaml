@@ -1,0 +1,43 @@
+$kind: http-request
+url: "{{baseUrl}}/api/delivery-services"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"carrierId\": 1,\r
+
+    \  \"name\": \"Test Locker\",\r
+
+    \  \"type\": \"ParcelLocker\",\r
+
+    \  \"maxWeightKg\": 12,\r
+
+    \  \"maxLengthCm\": 50,\r
+
+    \  \"maxWidthCm\": 40,\r
+
+    \  \"maxHeightCm\": 35,\r
+
+    \  \"minDeliveryDays\": 1,\r
+
+    \  \"maxDeliveryDays\": 2\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const body = pm.response.json();\r
+
+      \r
+
+      pm.collectionVariables.set(\"testDeliveryServiceId\", body.id);\r
+
+      \r
+
+      pm.test(\"Status is 201\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });"
+    language: text/javascript
+order: 4411371400683610
