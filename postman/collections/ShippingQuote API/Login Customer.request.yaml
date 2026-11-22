@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/api/auth/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"customer@test.lt\",\r
+
+    \  \"password\": \"Password123!\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const body = pm.response.json();\r
+
+      \r
+
+      pm.collectionVariables.set(\"customerAccessToken\", body.accessToken);\r
+
+      pm.collectionVariables.set(\"customerRefreshToken\", body.refreshToken);\r
+
+      \r
+
+      pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Role is Customer\", function () {\r
+
+      \    pm.expect(body.role).to.eql(\"Customer\");\r
+
+      });"
+    language: text/javascript
+order: 4503599627377475

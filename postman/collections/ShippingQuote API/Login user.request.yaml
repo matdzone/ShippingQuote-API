@@ -1,0 +1,51 @@
+$kind: http-request
+url: "{{baseUrl}}/api/auth/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"customer@test.lt\",\r
+
+    \  \"password\": \"Password123!\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const body = pm.response.json();\r
+
+      \r
+
+      pm.collectionVariables.set(\"accessToken\", body.accessToken);\r
+
+      pm.collectionVariables.set(\"refreshToken\", body.refreshToken);\r
+
+      pm.collectionVariables.set(\"testUserId\", body.userId);\r
+
+      \r
+
+      pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Login returns tokens and user data\", function () {\r
+
+      \    pm.expect(body.accessToken).to.be.a(\"string\").and.not.empty;\r
+
+      \    pm.expect(body.refreshToken).to.be.a(\"string\").and.not.empty;\r
+
+      \    pm.expect(body).to.have.property(\"accessTokenExpiresAt\");\r
+
+      \    pm.expect(body).to.have.property(\"userId\");\r
+
+      \    pm.expect(body.email).to.eql(\"customer@test.lt\");\r
+
+      \    pm.expect(body.role).to.eql(\"Customer\");\r
+
+      });"
+    language: text/javascript
+order: 4503599627373475

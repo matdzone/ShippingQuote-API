@@ -1,0 +1,49 @@
+$kind: http-request
+url: "{{baseUrl}}/api/carriers?page=1&pageSize=100"
+method: GET
+queryParams:
+  page: "1"
+  pageSize: "100"
+auth:
+  type: bearer
+  credentials:
+    token: "{{managerAccessToken}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const body = pm.response.json();\r
+
+      \r
+
+      const dpd = body.items.find(c => c.code === \"DPD\");\r
+
+      const omniva = body.items.find(c => c.code === \"OMNIVA\");\r
+
+      \r
+
+      pm.test(\"DPD and Omniva exist\", function () {\r
+
+      \    pm.expect(dpd).to.exist;\r
+
+      \    pm.expect(omniva).to.exist;\r
+
+      });\r
+
+      \r
+
+      if (dpd && omniva) {\r
+
+      \    pm.collectionVariables.set(\"dpdCarrierId\", dpd.id);\r
+
+      \    pm.collectionVariables.set(\"omnivaCarrierId\", omniva.id);\r
+
+      }"
+    language: text/javascript
+order: 4503599627384475

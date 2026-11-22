@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/api/delivery-services"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"carrierId\": {{dpdCarrierId}},\r
+
+    \  \"name\": \"DPD Manager Test Service\",\r
+
+    \  \"type\": \"Courier\",\r
+
+    \  \"maxWeightKg\": 20,\r
+
+    \  \"maxLengthCm\": 60,\r
+
+    \  \"maxWidthCm\": 40,\r
+
+    \  \"maxHeightCm\": 40,\r
+
+    \  \"minDeliveryDays\": 1,\r
+
+    \  \"maxDeliveryDays\": 2\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{managerAccessToken}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Manager can create service for own carrier\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });"
+    language: text/javascript
+order: 4503599627385475

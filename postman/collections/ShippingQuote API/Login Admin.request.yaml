@@ -1,0 +1,37 @@
+$kind: http-request
+url: "{{baseUrl}}/api/auth/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"email\": \"admin@test.lt\",\r
+
+    \  \"password\": \"Admin123!\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const body = pm.response.json();\r
+
+      \r
+
+      pm.collectionVariables.set(\"adminAccessToken\", body.accessToken);\r
+
+      \r
+
+      pm.test(\"Status is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Role is Administrator\", function () {\r
+
+      \    pm.expect(body.role).to.eql(\"Administrator\");\r
+
+      });"
+    language: text/javascript
+order: 4503599627378475
