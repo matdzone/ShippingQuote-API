@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShippingQuote.Server.DTOs.Common;
 using ShippingQuote.Server.DTOs.PricingRules;
 using ShippingQuote.Server.Services;
@@ -7,13 +8,16 @@ namespace ShippingQuote.Server.Controllers;
 
 [ApiController]
 [Route("api/pricing-rules")]
+[Authorize]
 public class PricingRulesController : ControllerBase
 {
 	private readonly PricingRuleService _service;
+	private readonly ResourceAccessService _access;
 
-	public PricingRulesController(PricingRuleService service)
+	public PricingRulesController(PricingRuleService service, ResourceAccessService access)
 	{
 		_service = service;
+		_access = access;
 	}
 
 	/*[HttpGet]
@@ -60,16 +64,21 @@ public class PricingRulesController : ControllerBase
 		AddLinks(rule);
 		return Ok(rule);
 	}
-
+	[Authorize(Roles = "Administrator,CarrierManager")]
 	[HttpPost]
 	public async Task<ActionResult<PricingRuleDto>> Create(
 		CreatePricingRuleDto dto)
 	{
+
 		if (!await _service.DeliveryServiceExistsAsync(dto.DeliveryServiceId))
 		{
 			return BadRequest("Delivery service does not exist.");
 		}
-
+		if (!await _access.CanManageDeliveryServiceAsync(
+			User, dto.DeliveryServiceId))
+		{
+			return Forbid();
+		}
 		if (!_service.IsWeightRangeValid(
 			dto.MinWeightKg,
 			dto.MaxWeightKg))
@@ -100,12 +109,31 @@ public class PricingRulesController : ControllerBase
 			new { id = rule.Id },
 			rule);
 	}
-
+	[Authorize(Roles = "Administrator,CarrierManager")]
 	[HttpPut("{id}")]
 	public async Task<ActionResult<PricingRuleDto>> Update(
 		int id,
 		UpdatePricingRuleDto dto)
 	{
+		PricingRuleDto? existing =
+		await _service.GetByIdAsync(id);
+
+		if (existing == null)
+		{
+			return NotFound();
+		}
+		if (!await _access.CanManageDeliveryServiceAsync(
+		User,
+		existing.DeliveryServiceId))
+		{
+			return Forbid();
+		}
+		if (!await _access.CanManageDeliveryServiceAsync(
+		User,
+		dto.DeliveryServiceId))
+		{
+			return Forbid();
+		}
 		if (!await _service.DeliveryServiceExistsAsync(dto.DeliveryServiceId))
 		{
 			return BadRequest("Delivery service does not exist.");
@@ -144,10 +172,23 @@ public class PricingRulesController : ControllerBase
 
 		return Ok(rule);
 	}
-
+	[Authorize(Roles = "Administrator,CarrierManager")]
 	[HttpDelete("{id}")]
 	public async Task<ActionResult> Delete(int id)
 	{
+		PricingRuleDto? existing =
+		await _service.GetByIdAsync(id);
+
+		if (existing == null)
+		{
+			return NotFound();
+		}
+		if (!await _access.CanManageDeliveryServiceAsync(
+		User,
+		existing.DeliveryServiceId))
+		{
+			return Forbid();
+		}
 		bool deleted = await _service.DeleteAsync(id);
 
 		if (!deleted)
@@ -158,6 +199,7 @@ public class PricingRulesController : ControllerBase
 		return NoContent();
 	}
 	[HttpGet("~/api/carriers/{carrierId:int}/services/{serviceId:int}/pricing-rules")]
+	[Authorize]
 	public async Task<ActionResult<List<PricingRuleDto>>> GetByHierarchy(
 	int carrierId, int serviceId)
 	{

@@ -13,7 +13,7 @@ public class ShippingQuoteDbContext : DbContext
 	public DbSet<DeliveryService> DeliveryServices => Set<DeliveryService>();
 	public DbSet<PricingRule> PricingRules => Set<PricingRule>();
 	public DbSet<User> Users => Set<User>();
-
+	public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
@@ -79,5 +79,25 @@ public class ShippingQuoteDbContext : DbContext
 		modelBuilder.Entity<PricingRule>()
 			.Property(p => p.FreeFromOrderValue)
 			.HasPrecision(10, 2);
+
+		modelBuilder.Entity<User>()
+			.HasIndex(u => u.Email)
+			.IsUnique();
+
+		modelBuilder.Entity<User>()
+			.HasOne(u => u.Carrier)
+			.WithMany(c => c.Users)
+			.HasForeignKey(u => u.CarrierId)
+			.OnDelete(DeleteBehavior.SetNull);
+
+		modelBuilder.Entity<RefreshToken>()
+			.HasOne(r => r.User)
+			.WithMany(u => u.RefreshTokens)
+			.HasForeignKey(r => r.UserId)
+			.OnDelete(DeleteBehavior.Cascade);
+
+		modelBuilder.Entity<RefreshToken>()
+			.HasIndex(r => r.TokenHash)
+			.IsUnique();
 	}
 }

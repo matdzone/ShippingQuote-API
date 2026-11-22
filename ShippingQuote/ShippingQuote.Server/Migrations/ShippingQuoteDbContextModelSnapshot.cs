@@ -149,6 +149,40 @@ namespace ShippingQuote.Server.Migrations
                     b.ToTable("PricingRules");
                 });
 
+            modelBuilder.Entity("ShippingQuote.Server.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("ShippingQuote.Server.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -165,7 +199,7 @@ namespace ShippingQuote.Server.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -181,6 +215,9 @@ namespace ShippingQuote.Server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CarrierId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -207,6 +244,17 @@ namespace ShippingQuote.Server.Migrations
                     b.Navigation("DeliveryService");
                 });
 
+            modelBuilder.Entity("ShippingQuote.Server.Models.RefreshToken", b =>
+                {
+                    b.HasOne("ShippingQuote.Server.Models.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ShippingQuote.Server.Models.User", b =>
                 {
                     b.HasOne("ShippingQuote.Server.Models.Carrier", "Carrier")
@@ -227,6 +275,11 @@ namespace ShippingQuote.Server.Migrations
             modelBuilder.Entity("ShippingQuote.Server.Models.DeliveryService", b =>
                 {
                     b.Navigation("PricingRules");
+                });
+
+            modelBuilder.Entity("ShippingQuote.Server.Models.User", b =>
+                {
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

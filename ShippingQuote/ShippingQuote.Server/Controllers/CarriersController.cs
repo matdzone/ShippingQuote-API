@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using ShippingQuote.Server.DTOs.Carriers;
 using ShippingQuote.Server.DTOs.Common;
 using ShippingQuote.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShippingQuote.Server.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
+	[Authorize]
 	public class CarriersController : ControllerBase
 	{
 		private readonly CarrierService _service;
@@ -56,6 +58,7 @@ namespace ShippingQuote.Server.Controllers
 			AddLinks(carrier);
 			return Ok(carrier);
 		}
+		[Authorize(Roles = "Administrator")]
 		[HttpPost]
 		public async Task <ActionResult<CarrierDto>> Create(CreateCarrierDto dto)
 		{
@@ -69,6 +72,7 @@ namespace ShippingQuote.Server.Controllers
 			carrier);
 
 		}
+		[Authorize(Roles = "Administrator")]
 		[HttpPut("{id}")]
 		public async Task <ActionResult<CarrierDto>> Update(int id, UpdateCarrierDto dto){
 			if (await _service.CodeExistsAsync(dto.Code, id))
@@ -82,6 +86,7 @@ namespace ShippingQuote.Server.Controllers
 			AddLinks(carrier);
 			return Ok(carrier);
 		}
+		[Authorize(Roles = "Administrator")]
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> Delete(int id)
 		{

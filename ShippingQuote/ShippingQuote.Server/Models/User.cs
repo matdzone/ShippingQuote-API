@@ -19,4 +19,5 @@ public class User
 	public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
 	public Carrier? Carrier { get; set; }
+	public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

@@ -1,22 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShippingQuote.Server.DTOs.Common;
 using ShippingQuote.Server.DTOs.DeliveryServices;
 using ShippingQuote.Server.DTOs.PricingRules;
 using ShippingQuote.Server.Enums;
 using ShippingQuote.Server.Services;
-using ShippingQuote.Server.DTOs.Common;
-using ShippingQuote.Server.Enums;
 namespace ShippingQuote.Server.Controllers;
 
 [ApiController]
 [Route("api/delivery-services")]
+[Authorize]
 public class DeliveryServicesController : ControllerBase
 {
 	private readonly DeliveryServiceService _service;
+	private readonly ResourceAccessService _access;
 
-	public DeliveryServicesController(DeliveryServiceService service)
+	public DeliveryServicesController(DeliveryServiceService service, ResourceAccessService access)
 	{
 		_service = service;
+		_access = access;
 	}
 
 	/*[HttpGet]
@@ -69,7 +71,7 @@ public class DeliveryServicesController : ControllerBase
 		AddLinks(service);
 		return Ok(service);
 	}
-
+	[Authorize(Roles = "Administrator,CarrierManager")]
 	[HttpPost]
 	public async Task<ActionResult<DeliveryServiceDto>> Create(
 		CreateDeliveryServiceDto dto)
@@ -78,7 +80,10 @@ public class DeliveryServicesController : ControllerBase
 		{
 			return BadRequest("Carrier does not exist.");
 		}
-
+		if (!await _access.CanManageCarrierAsync(User, dto.CarrierId))
+		{
+			return Forbid();
+		}
 		if (!_service.IsDeliveryWindowValid(
 			dto.MinDeliveryDays,
 			dto.MaxDeliveryDays))
@@ -95,12 +100,27 @@ public class DeliveryServicesController : ControllerBase
 			new { id = service.Id },
 			service);
 	}
-
+	[Authorize(Roles = "Administrator,CarrierManager")]
 	[HttpPut("{id}")]
 	public async Task<ActionResult<DeliveryServiceDto>> Update(
 		int id,
 		UpdateDeliveryServiceDto dto)
 	{
+		DeliveryServiceDto? existing =
+		await _service.GetByIdAsync(id);
+
+		if (existing == null)
+		{
+			return NotFound();
+		}
+		if (!await _access.CanManageDeliveryServiceAsync(User, id))
+		{
+			return Forbid();
+		}
+		if (!await _access.CanManageCarrierAsync(User, dto.CarrierId))
+		{
+			return Forbid();
+		}
 		if (!await _service.CarrierExistsAsync(dto.CarrierId))
 		{
 			return BadRequest("Carrier does not exist.");
@@ -124,10 +144,21 @@ public class DeliveryServicesController : ControllerBase
 
 		return Ok(service);
 	}
-
+	[Authorize(Roles = "Administrator,CarrierManager")]
 	[HttpDelete("{id}")]
 	public async Task<ActionResult> Delete(int id)
 	{
+		DeliveryServiceDto? existing =
+		await _service.GetByIdAsync(id);
+
+		if (existing == null)
+		{
+			return NotFound();
+		}
+		if (!await _access.CanManageDeliveryServiceAsync(User, id))
+		{
+			return Forbid();
+		}
 		bool deleted = await _service.DeleteAsync(id);
 
 		if (!deleted)
